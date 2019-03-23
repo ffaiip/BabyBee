@@ -1,31 +1,35 @@
 import arcade
 
-SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 600
+from models import Bee
+
+SCREEN_WIDTH = 500
+SCREEN_HEIGHT = 700
 
 
-class SpaceGameWindow(arcade.Window):
+class BabyBeeGameWindow(arcade.Window):
     def __init__(self, width, height):
         super().__init__(width, height)
 
         arcade.set_background_color(arcade.color.BLACK)
 
-        self.bee = arcade.Sprite('images/bee.png')
-        self.bee.set_position(100, 100)
+        self.bee = Bee(100, 100)
+        self.bee_sprite = arcade.Sprite('images/bee.png')
+        self.background = arcade.load_texture(
+            "images/background.jpg")
 
     def on_draw(self):
         arcade.start_render()
-
-        self.bee.draw()
+        arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
+                                      SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
+        self.bee_sprite.draw()
 
     def update(self, delta):
         bee = self.bee
 
-        if bee.center_y > SCREEN_HEIGHT:
-            bee.center_y = 0
-        bee.set_position(bee.center_x, bee.center_y + 5)
+        bee.update(delta)
+        self.bee_sprite.set_position(bee.x, bee.y)
 
 
 if __name__ == '__main__':
-    window = SpaceGameWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
+    window = BabyBeeGameWindow(SCREEN_WIDTH, SCREEN_HEIGHT)
     arcade.run()
