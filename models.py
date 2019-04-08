@@ -13,16 +13,25 @@ DIR_OFFSETS = {DIR_STILL: (0, 0),
 MOVEMENT_SPEED = 4
 
 
-class Bee:
+class Model:
+    def __init__(self, world, x, y, angle):
+        self.world = world
+        self.x = x
+        self.y = y
+        self.angle = 0
+
+    def hit(self, other, hit_size):
+        return (abs(self.x - other.x) <= hit_size) and (abs(self.y - other.y) <= hit_size)
+
+
+class Bee(Model):
     DIR_HORIZONTAL = 0
     DIR_VERTICAL = 1
 
     def __init__(self, world, x, y):
-        self.world = world
-        self.x = x
-        self.y = y
+        super().__init__(world, x, y, -90)
+
         self.direction = DIR_STILL
-        self.angle = 0
 
     def move(self, direction):
         self.x += MOVEMENT_SPEED * DIR_OFFSETS[direction][0]
@@ -32,18 +41,29 @@ class Bee:
         self.move(self.direction)
 
 
-class Monster:
+class Monster(Model):
 
     MONSTER_SPEED = 1
 
     def __init__(self, world, x, y):
-        self.world = world
-        self.x = x
-        self.y = y
-        self.angle = 0
+        super().__init__(world, x, y, 0)
 
     def update(self, delta):
         self.y -= Monster.MONSTER_SPEED
+
+    def dead(self):
+        Monster.kill()
+
+
+class Bullet(Model):
+
+    BULLET_SPEED = 3
+
+    def __init__(self, world, x, y):
+        super().__init__(world, x, y, 0)
+
+    def update(self, delta):
+        self.y += Bullet.BULLET_SPEED
 
 
 class World:
@@ -52,11 +72,16 @@ class World:
         self.height = height
 
         self.bee = Bee(self, 100, 100)
-        self.monster = Monster(self, width-200, height)
+        self.monster = Monster(self, 100, height)
+        self.bullet = Bullet(self, 100, 101)
 
     def update(self, delta):
         self.bee.update(delta)
         self.monster.update(delta)
+        self.bullet.update(delta)
+
+        if self.bullet.hit(self.monster, 20):
+            self.monster.dead()
 
     def on_key_press(self, key, key_modifiers):
         if key == arcade.key.LEFT:

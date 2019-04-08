@@ -28,19 +28,25 @@ class BabyBeeGameWindow(arcade.Window):
 
         arcade.set_background_color(arcade.color.BLACK)
         self.world = World(width, height)
+        # self.bullet_list = None
         self.bee_sprite = ModelSprite('images/bee.png', model=self.world.bee)
-        self.monster_sprite = ModelSprite(
-            'images/monster.png', model=self.world.monster)
+        self.monster_sprite = ModelSprite('images/monster.png', model=self.world.monster)
+        self.bullet_sprite = ModelSprite('images/bullet.png', model=self.world.bullet)
 
-        self.background = arcade.load_texture(
-            "images/background.jpg")
+        self.background = arcade.load_texture("images/background.jpg")
+
+    def setup(self):
+        self.bullet_list = arcade.SpriteList()
 
     def on_draw(self):
         arcade.start_render()
         arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
                                       SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
+        self.bullet_sprite.draw()
+        # self.bullet_list.draw()                              
         self.bee_sprite.draw()
         self.monster_sprite.draw()
+        
 
     def update(self, delta):
         self.world.update(delta)
