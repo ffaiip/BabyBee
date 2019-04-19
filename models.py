@@ -55,7 +55,7 @@ class Monster(Model):
         self.y -= Monster.MONSTER_SPEED
 
     def random_position(self):
-        self.x = randint(0, self.world.width - 1)
+        self.x = randint(30, self.world.width - 30)
         self.y = SCREEN_HEIGHT
 
 
@@ -108,6 +108,14 @@ class World:
 
     # def on_mouse_press(self, x, y, button, modifiers):
     #     bullet = Bullet(self, 100, 200)
+
+    def limit_screen(self, width):
+        if self.bee.x >= width - 30:
+            self.bee.x = width - 30
+        elif self.bee.x <= 30:
+            self.bee.x = 30
+        
+        
 
     def on_key_press(self, key, key_modifiers):
         if key == arcade.key.LEFT:

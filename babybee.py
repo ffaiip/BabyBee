@@ -54,6 +54,7 @@ class BabyBeeGameWindow(arcade.Window):
         
     def update(self, delta):
         self.world.update(delta)
+        self.world.limit_screen(SCREEN_WIDTH)
 
     def on_key_press(self, key, key_modifiers):
         self.world.on_key_press(key, key_modifiers)
