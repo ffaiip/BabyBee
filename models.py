@@ -1,4 +1,5 @@
 import arcade.key
+from random import randint
 
 DIR_STILL = 0
 DIR_UP = 1
@@ -11,6 +12,9 @@ DIR_OFFSETS = {DIR_STILL: (0, 0),
                DIR_LEFT: (-1, 0)}
 
 MOVEMENT_SPEED = 4
+
+SCREEN_WIDTH = 500
+SCREEN_HEIGHT = 700
 
 
 class Model:
@@ -40,7 +44,6 @@ class Bee(Model):
     def update(self, delta):
         self.move(self.direction)
 
-
 class Monster(Model):
 
     MONSTER_SPEED = 1
@@ -51,8 +54,20 @@ class Monster(Model):
     def update(self, delta):
         self.y -= Monster.MONSTER_SPEED
 
-    def dead(self):
-        Monster.kill()
+    def random_position(self):
+        self.x = randint(0, self.world.width - 1)
+        self.y = SCREEN_HEIGHT
+
+
+class Coin(Model):
+
+    COIN_SPEED = 1
+
+    def __init__(self, world, x, y):
+        super().__init__(world, x, y, 0)
+
+    def update(self, delta):
+        self.y -= Coin.COIN_SPEED
 
 
 class Bullet(Model):
@@ -74,14 +89,25 @@ class World:
         self.bee = Bee(self, 100, 100)
         self.monster = Monster(self, 100, height)
         self.bullet = Bullet(self, 100, 101)
+        self.coin = Coin(self, 100, height+50)
+        self.score = 0
 
     def update(self, delta):
         self.bee.update(delta)
         self.monster.update(delta)
         self.bullet.update(delta)
+        self.coin.update(delta)
 
         if self.bullet.hit(self.monster, 20):
-            self.monster.dead()
+            self.monster.random_position()
+            self.bullet.y = 101
+
+        if self.bee.hit(self.coin, 20):
+            self.score += 1
+            self.coin.y = SCREEN_HEIGHT
+
+    # def on_mouse_press(self, x, y, button, modifiers):
+    #     bullet = Bullet(self, 100, 200)
 
     def on_key_press(self, key, key_modifiers):
         if key == arcade.key.LEFT:

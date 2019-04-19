@@ -32,6 +32,7 @@ class BabyBeeGameWindow(arcade.Window):
         self.bee_sprite = ModelSprite('images/bee.png', model=self.world.bee)
         self.monster_sprite = ModelSprite('images/monster.png', model=self.world.monster)
         self.bullet_sprite = ModelSprite('images/bullet.png', model=self.world.bullet)
+        self.coin_sprite = ModelSprite('images/coin.png', model=self.world.coin)
 
         self.background = arcade.load_texture("images/background.jpg")
 
@@ -46,8 +47,11 @@ class BabyBeeGameWindow(arcade.Window):
         # self.bullet_list.draw()                              
         self.bee_sprite.draw()
         self.monster_sprite.draw()
-        
+        self.coin_sprite.draw()
 
+        arcade.draw_text("Score : " + str(self.world.score), self.width - 120, self.height - 30, arcade.color.GRAY_BLUE, 20)
+
+        
     def update(self, delta):
         self.world.update(delta)
 
