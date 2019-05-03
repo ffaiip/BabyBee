@@ -77,8 +77,8 @@ class Bullet(Model):
     def __init__(self, world, x, y):
         super().__init__(world, x, y, 0)
 
-    def update(self, delta):
-        self.y += Bullet.BULLET_SPEED
+    # def update(self, delta):
+    #     self.y += Bullet.BULLET_SPEED
 
 
 class World:
@@ -95,19 +95,18 @@ class World:
     def update(self, delta):
         self.bee.update(delta)
         self.monster.update(delta)
-        self.bullet.update(delta)
+        # self.bullet.update(delta)
         self.coin.update(delta)
 
         if self.bullet.hit(self.monster, 20):
             self.monster.random_position()
-            self.bullet.y = 101
 
         if self.bee.hit(self.coin, 20):
             self.score += 1
             self.coin.y = SCREEN_HEIGHT
 
     # def on_mouse_press(self, x, y, button, modifiers):
-    #     bullet = Bullet(self, 100, 200)
+        
 
     def limit_screen(self, width):
         if self.bee.x >= width - 30:
@@ -115,8 +114,6 @@ class World:
         elif self.bee.x <= 30:
             self.bee.x = 30
         
-        
-
     def on_key_press(self, key, key_modifiers):
         if key == arcade.key.LEFT:
             self.bee.direction = DIR_LEFT
