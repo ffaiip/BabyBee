@@ -104,10 +104,7 @@ class World:
         if self.bee.hit(self.coin, 20):
             self.score += 1
             self.coin.y = SCREEN_HEIGHT
-
-    # def on_mouse_press(self, x, y, button, modifiers):
         
-
     def limit_screen(self, width):
         if self.bee.x >= width - 30:
             self.bee.x = width - 30

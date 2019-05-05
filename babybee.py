@@ -1,9 +1,15 @@
 import arcade
 
 from models import World, Bee
+import random
 
 SCREEN_WIDTH = 500
 SCREEN_HEIGHT = 700
+MONSTER_COUNT = 5
+
+MONSTER_SPEED = -1
+
+COIN_SPEED = -1
 
 BULLET_SPEED = 5
 
@@ -23,6 +29,9 @@ class ModelSprite(arcade.Sprite):
         self.sync_with_model()
         super().draw()
 
+    # def is_hit(self, other, hit_size):
+    #     return arcade.check_for_collision_with_list()
+
 
 class BabyBeeGameWindow(arcade.Window):
     def __init__(self, width, height):
@@ -31,13 +40,34 @@ class BabyBeeGameWindow(arcade.Window):
         arcade.set_background_color(arcade.color.BLACK)
         self.world = World(width, height)
         self.bullet_list = arcade.SpriteList()
+        self.coin_list = arcade.SpriteList()
+        self.monster_list = arcade.SpriteList()
         self.bee_sprite = ModelSprite('images/bee.png', model=self.world.bee)
-        self.monster_sprite = ModelSprite(
-            'images/monster.png', model=self.world.monster)
+        # self.monster_sprite = ModelSprite(
+        #     'images/monster.png', model=self.world.monster)
         # self.bullet_sprite = ModelSprite(
         #     'images/bullet.png', model=self.world.bullet)
-        self.coin_sprite = ModelSprite(
-            'images/coin.png', model=self.world.coin)
+
+        self.laser_sound = arcade.sound.load_sound("sounds/laser.wav")
+
+
+        # Create the monsters
+        for monster in range(MONSTER_COUNT):
+
+            # Create the coin instance
+            # Coin image from kenney.nl
+            monster = ModelSprite('images/monster.png', model=self.world.monster)
+
+            # Position the coin
+            monster.center_x = random.randint(30, SCREEN_WIDTH-30)
+            monster.center_y = SCREEN_HEIGHT
+
+            monster.change_y = MONSTER_SPEED
+
+
+            # Add the coin to the lists
+            self.monster_list.append(monster)
+        
 
         self.background = arcade.load_texture("images/background.jpg")
 
@@ -49,21 +79,18 @@ class BabyBeeGameWindow(arcade.Window):
         # self.bullet_sprite.draw()
         self.bullet_list.draw()
         self.bee_sprite.draw()
-        self.monster_sprite.draw()
-        self.coin_sprite.draw()
+        self.monster_list.draw()
+        # self.monster_sprite.draw()
+        self.coin_list.draw()
 
         arcade.draw_text("Score : " + str(self.world.score), self.width -
                          120, self.height - 30, arcade.color.GRAY_BLUE, 20)
 
-    def update(self, delta):
-        self.world.update(delta)
-        self.world.limit_screen(SCREEN_WIDTH)
-        # self.world.bullet.update(delta)
-        self.bullet_list.update()
-
     def on_mouse_press(self, x, y, button, modifiers):
-        self.bullet_sprite = ModelSprite(
-            'images/bullet.png', model=self.world.bullet)
+
+        arcade.sound.play_sound(self.laser_sound)
+
+        self.bullet_sprite = ModelSprite('images/bullet.png', model=self.world.bullet)
 
         self.bullet_sprite.change_y = BULLET_SPEED
 
@@ -72,6 +99,32 @@ class BabyBeeGameWindow(arcade.Window):
 
         self.bullet_list.append(self.bullet_sprite)
         print(len(self.bullet_list))
+
+    def update(self, delta):
+        self.world.update(delta)
+        self.world.limit_screen(SCREEN_WIDTH)
+        self.bullet_list.update()
+        self.monster_list.update()
+
+        for bullet in self.bullet_list:
+
+            hit_list = arcade.check_for_collision_with_list(bullet, self.monster_list)
+
+            if len(hit_list) > 0:
+                print("ok")
+                self.coin_sprite = ModelSprite('images/coin.png', model=self.world.coin) 
+
+                self.coin_sprite.change_y = COIN_SPEED
+
+                self.coin_sprite.center_x = hit_list[0].center_x
+                self.coin_sprite.center_y = hit_list[0].center_y
+
+                self.coin_list.append(self.coin_sprite) 
+
+                bullet.kill()
+
+            for monster in hit_list:
+                monster.kill() 
 
     def on_key_press(self, key, key_modifiers):
         self.world.on_key_press(key, key_modifiers)
