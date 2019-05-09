@@ -24,9 +24,6 @@ class Model:
         self.y = y
         self.angle = 0
 
-    def hit(self, other, hit_size):
-        return (abs(self.x - other.x) <= hit_size) and (abs(self.y - other.y) <= hit_size)
-
 
 class Bee(Model):
     DIR_HORIZONTAL = 0
@@ -46,28 +43,19 @@ class Bee(Model):
 
 class Monster(Model):
 
-    MONSTER_SPEED = 1
-
     def __init__(self, world, x, y):
         super().__init__(world, x, y, 0)
-
-    def update(self, delta):
-        self.y -= Monster.MONSTER_SPEED
-
-    def random_position(self):
-        self.x = randint(30, self.world.width - 30)
-        self.y = SCREEN_HEIGHT
 
 
 class Coin(Model):
 
-    COIN_SPEED = 1
+    # COIN_SPEED = 1
 
     def __init__(self, world, x, y):
         super().__init__(world, x, y, 0)
 
-    def update(self, delta):
-        self.y -= Coin.COIN_SPEED
+    # def update(self, delta):
+    #     self.y -= Coin.COIN_SPEED
 
 
 class Bullet(Model):
@@ -94,16 +82,8 @@ class World:
 
     def update(self, delta):
         self.bee.update(delta)
-        self.monster.update(delta)
         # self.bullet.update(delta)
-        self.coin.update(delta)
-
-        if self.bullet.hit(self.monster, 20):
-            self.monster.random_position()
-
-        if self.bee.hit(self.coin, 20):
-            self.score += 1
-            self.coin.y = SCREEN_HEIGHT
+        # self.coin.update(delta)
         
     def limit_screen(self, width):
         if self.bee.x >= width - 30:
