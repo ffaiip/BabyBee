@@ -58,7 +58,7 @@ class BabyBeeGameWindow(arcade.Window):
         arcade.start_render()
         arcade.draw_texture_rectangle(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2,
                                       SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
-        # self.bullet_sprite.draw()
+
         self.bullet_list.draw()
         self.bee_sprite.draw()
         self.monster_list.draw()
@@ -126,10 +126,6 @@ class BabyBeeGameWindow(arcade.Window):
         if w - menu.width//2 <= x <= w + menu.width//2:
             if h - menu.height//2 <= y <= h + menu.height//2:
                 self.set_up(self.w, self.h)
-                    
-
-
-
 
     def on_key_press(self, key, key_modifiers):
         self.world.on_key_press(key, key_modifiers)
