@@ -75,15 +75,18 @@ class World:
         self.height = height
 
         self.bee = Bee(self, 100, 100)
-        self.monster = Monster(self, 100, height)
+        self.monster = Monster(self, 100, 100)
+        # self.monster =[ Monster(self, width - 100, height),
+        #     Monster(self, width - 200, height + 100),
+        #     Monster(self, width - 250, height + 200),
+        #     Monster(self, width - 300, height + 300),
+        #     Monster(self, width - 200, height + 400)]
         self.bullet = Bullet(self, 100, 101)
         self.coin = Coin(self, 100, height+50)
         self.score = 0
 
     def update(self, delta):
         self.bee.update(delta)
-        # self.bullet.update(delta)
-        # self.coin.update(delta)
         
     def limit_screen(self, width):
         if self.bee.x >= width - 30:
